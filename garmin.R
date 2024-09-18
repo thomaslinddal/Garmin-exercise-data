@@ -257,8 +257,7 @@ garmin_clean %>%
     plot.title = element_text(hjust = 0.5))
 
 
-
-
+#
 
 #q how to use filter to include avg_hr under 120 in the ggplot?
 #a filter(avg_hr < 120)
