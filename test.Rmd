@@ -1,8 +1,8 @@
 ---
 output:
-  word_document: default
-  html_document: default
   pdf_document: default
+  html_document: default
+  word_document: default
 ---
 
 ```{r include=FALSE}
@@ -16,11 +16,11 @@ pacman::p_load(
   hms,# til at arbejde med tid
   tidyverse, # til data management
   easystats, # til at lave statistik
+  tinytex,
   skimr # summary af data
 )
 
 garmin_raw <- import("Activities.csv")
-
 ```
 
 # Showcase af R og mine middelaldrende træningsdata :)
@@ -96,7 +96,7 @@ garmin_clean <- garmin_raw %>%
 Nu hvor dataene er rene, kan vi begynde at udforske dem. Der er helt sikkert flere variable som ville være praktiske at konvertere til andre data classes, men til denne forestilling kan det her gå :) 
 PS: så er jeg gået lidt amok i farver til den her fremvisning. Jeg lover at holde det mere sobert fremadrettet :)
 ```{r echo=FALSE, warning=FALSE}
-skim(garmin_clean)
+skim_without_charts(garmin_clean)
 ```
 
 Først kan vi tage et kig på hvilke dage af ugen jeg oftest er ude at cykle.
