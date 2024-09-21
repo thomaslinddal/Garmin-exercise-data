@@ -127,7 +127,6 @@ garmin_clean %>%
     y = avg_speed,
     fill = year_cat)) +
   geom_boxplot(show.legend = FALSE) + # add boxplot
-  scale_fill_brewer(palette = "Paired") +
   scale_y_continuous(breaks = seq(0, 45, 5),
                      expand = c(0, 0)) +
   scale_x_discrete(expand = c(0, 0)) +
@@ -162,8 +161,7 @@ garmin_clean %>%
   scale_y_continuous(breaks = seq(0, 115, 15),
                      expand = c(0, 0)) +
   scale_x_discrete(expand = c(0, 0)) +
-  scale_fill_brewer(palette = "Paired") +
-  theme_modern() +
+  theme_minimal() +
   labs(
     x = "Ugedage",
     y = "Antal aktiviteter",
@@ -194,8 +192,7 @@ garmin_clean %>%
   scale_y_continuous(breaks = seq(0, 90, 10),
                      expand = c(0, 0)) +
   scale_x_discrete(expand = c(0, 0)) +
-  scale_fill_brewer(palette = "Paired") +
-  theme_modern() +
+  theme_minimal() +
   labs(
     x = "Måneder",
     y = "Antal aktiviteter",
@@ -225,12 +222,12 @@ ggplot(data = garmin_clean,
                      expand = c(0, 0)) +
   scale_y_continuous(breaks = seq(0, 40, 5),
                      expand = c(0, 0)) +
-  theme_modern() +
+  theme_minimal() +
   labs(
     x = "År",
     y = "Gennemsnitsfart",
     title = "Lineær regression mellem gennemsnitsfart og tid",
-    caption = "Garmin data mellem 2013-06-09 til 2024-09-11",
+    caption = "Kilde: Privat Garmin data mellem 2013-06-09 til 2024-09-11",
     color = "År") +
   theme(
     plot.title = element_text(hjust = 0.5),
@@ -238,21 +235,20 @@ ggplot(data = garmin_clean,
 
 # histogram over puls --------------------------------
 garmin_clean %>% 
-  mutate(avg_hr = as.numeric(avg_hr)) %>% 
   filter(avg_hr > 115) %>% 
   ggplot(mapping = aes(x = avg_hr)) +
   geom_histogram(
-    binwidth = 3, 
-    aes(fill = after_stat(count)), 
+    binwidth = 5, 
+    aes(fill = after_stat(count)),
+    show.legend = FALSE,
     color = "black") +
-  scale_fill_gradientn(colors = rainbow(5)) +
   scale_x_continuous(
     breaks = seq(0, 170, 5),
     expand = c(0, 0)) + 
   scale_y_continuous(
     breaks = seq(0, 80, 10),
     expand = c(0, 0)) +
-  theme_modern() +
+  theme_minimal() +
   labs(
     x = "Gennemsnitspuls",
     y = "Antal aktiviteter",
