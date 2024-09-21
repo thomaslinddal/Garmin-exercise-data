@@ -89,7 +89,13 @@ garmin_clean <- garmin_raw %>%
     max_hr = as.numeric(max_hr),
     
     # ascent
-    total_ascent = as.numeric(total_ascent))
+    total_ascent = as.numeric(total_ascent), 
+    ascent = case_when(
+      total_ascent < 400. ~ "Flat",
+      total_ascent >= 400 ~ "Moderate",
+      total_ascent > 800 ~ "Hilly")) # categorize ascent
+  
+  
 
 # T test af gennemsnitsfarven før og efter 30 år --------------------------------------------------------
 # er min gennemsnitsfart højere eller lavere før eller efter 30 år?
