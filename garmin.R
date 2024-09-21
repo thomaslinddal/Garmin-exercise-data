@@ -22,7 +22,8 @@ garmin_raw <- garmin_raw %>%
 
 names(garmin_raw)
 
-
+#Q how to filter row_number 375 and 295?
+#A 
 #clean data ---------------------------------------------------------------
 garmin_clean <- garmin_raw %>%
   janitor::clean_names() %>% # clean kollonne navne
@@ -38,7 +39,7 @@ garmin_clean <- garmin_raw %>%
   
   # fjern række med filter()
   filter(
-    row_number() != 375) %>% # fjern rækken.
+    !row_number() %in% c(375, 295)) %>% # fjern rækken.
   
   # væk med kollonner som ingen reel data har
   select(
@@ -75,7 +76,7 @@ garmin_clean <- garmin_raw %>%
     calories = as.numeric(calories), # convert to numeric
     calories = ifelse(calories > 20, calories / 100, calories), # convert to kilocalories
     calories = ifelse(calories == 16.000, NA, calories), # bugged value
-    
+  
     # Tid
     time = as_hms(time), # convert to time
     
@@ -85,7 +86,8 @@ garmin_clean <- garmin_raw %>%
     avg_speed = avg_speed / 10, # convert to km/h
     
     # Hr
-    avg_hr = as.numeric(avg_hr))
+    avg_hr = as.numeric(avg_hr),
+    max_hr = as.numeric(max_hr))
 
 # T test af gennemsnitsfarven før og efter 30 år --------------------------------------------------------
 # er min gennemsnitsfart højere eller lavere før eller efter 30 år?
