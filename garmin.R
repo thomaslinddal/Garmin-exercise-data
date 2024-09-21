@@ -257,3 +257,8 @@ garmin_clean %>%
     plot.title = element_text(hjust = 0.5))
 
 
+
+ggplot(garmin_clean, aes(
+  x = time,
+  y = distance)) +
+  geom_point()
