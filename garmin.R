@@ -22,8 +22,7 @@ garmin_raw <- garmin_raw %>%
 
 names(garmin_raw)
 
-#Q how to filter row_number 375 and 295?
-#A 
+
 #clean data ---------------------------------------------------------------
 garmin_clean <- garmin_raw %>%
   janitor::clean_names() %>% # clean kollonne navne
@@ -128,11 +127,11 @@ garmin_clean %>%
     y = avg_speed,
     fill = year_cat)) +
   geom_boxplot(show.legend = FALSE) + # add boxplot
-  scale_fill_manual(values = rainbow(3)) +
+  scale_fill_brewer(palette = "Paired") +
   scale_y_continuous(breaks = seq(0, 45, 5),
                      expand = c(0, 0)) +
   scale_x_discrete(expand = c(0, 0)) +
-  theme_modern() +
+  theme_minimal() +
   labs (
     x = "År",
     y = "Gennensnitshastighed (km/t)",
@@ -163,7 +162,7 @@ garmin_clean %>%
   scale_y_continuous(breaks = seq(0, 115, 15),
                      expand = c(0, 0)) +
   scale_x_discrete(expand = c(0, 0)) +
-  scale_fill_manual(values = rainbow(7)) +
+  scale_fill_brewer(palette = "Paired") +
   theme_modern() +
   labs(
     x = "Ugedage",
@@ -195,7 +194,7 @@ garmin_clean %>%
   scale_y_continuous(breaks = seq(0, 90, 10),
                      expand = c(0, 0)) +
   scale_x_discrete(expand = c(0, 0)) +
-  scale_fill_manual(values = rainbow(12)) +
+  scale_fill_brewer(palette = "Paired") +
   theme_modern() +
   labs(
     x = "Måneder",
@@ -226,9 +225,6 @@ ggplot(data = garmin_clean,
                      expand = c(0, 0)) +
   scale_y_continuous(breaks = seq(0, 40, 5),
                      expand = c(0, 0)) +
-  scale_color_gradientn(colors = rainbow(12),
-                        breaks = seq(2013, 2024, 2),
-                        labels = seq(2013, 2024, 2)) +
   theme_modern() +
   labs(
     x = "År",
@@ -265,11 +261,3 @@ garmin_clean %>%
     plot.title = element_text(hjust = 0.5))
 
 
-#
-
-#q how to use filter to include avg_hr under 120 in the ggplot?
-#a filter(avg_hr < 120)
-
-# library(epirhandbook)
-# download_book()
-  
