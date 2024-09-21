@@ -61,7 +61,6 @@ garmin_clean <- garmin_raw %>%
   
   # mutate kollonner
   mutate(
-    # Datoer med lubridate
     date_time = ymd_hms(date_time),# convert to date-time
     date_onset = date(date_time), # extract date
     time_onset = as_hms(date_time), # extract time
@@ -87,7 +86,10 @@ garmin_clean <- garmin_raw %>%
     
     # Hr
     avg_hr = as.numeric(avg_hr),
-    max_hr = as.numeric(max_hr))
+    max_hr = as.numeric(max_hr),
+    
+    # ascent
+    total_ascent = as.numeric(total_ascent))
 
 # T test af gennemsnitsfarven før og efter 30 år --------------------------------------------------------
 # er min gennemsnitsfart højere eller lavere før eller efter 30 år?
