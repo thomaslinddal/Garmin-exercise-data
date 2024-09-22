@@ -257,8 +257,24 @@ garmin_clean %>%
     plot.title = element_text(hjust = 0.5))
 
 
+# Tid sammenlignet med distance i forhold til gennemsnitsfart----------
 
-ggplot(garmin_clean, aes(
-  x = time,
-  y = distance)) +
-  geom_point()
+ggplot(garmin_clean, aes(x = time,
+                         y = distance,
+                         color = avg_speed)) +
+  geom_point() +
+  scale_y_continuous(breaks = seq(0, 150, 20)) +
+  annotate(x = 6000, y = 120, geom = "text", label = "Prikkernes farve som afspejler gennemsnitsfart viser 
+           en tydelig sammenhæng mellem kortere ture og højere gennemsnitsfart", 
+           size = 3.5) +
+  theme_minimal() +
+  theme(legend.position = c(0.9, 0.1),
+        legend.direction = "horizontal",
+        legend.title.position = "top") +
+  labs(title = "Tid sammenlignet med distance",
+       x = "Tid",
+       y = "Distance (km)",
+       color = "Gennemsnitsfart")
+
+  
+
