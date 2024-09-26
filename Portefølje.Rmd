@@ -25,7 +25,7 @@ garmin_raw <- import("Activities.csv")
 
 # Showcase af R og mine middelaldrende træningsdata :)
 
-## Jeg vil forsøge at vise mine R-færdigheder ved at analysere mine egne træningsdata. Jeg har brugt en række R-pakker for at rense, analysere og visualisere dataene. Jeg har lavet to versioner af den her portefølje - et med kode, og et uden :) Lad os dykke ned i det! 
+## Jeg vil forsøge at vise mine R-færdigheder ved at analysere mine egne træningsdata. Jeg har brugt en række R-pakker for at rense, analysere og visualisere dataene. Lad os dykke ned i det! 
 
 Først og fremmest importerer jeg data og gør dem klar til analyse. Det involverer at fjerne irrelevante kolonner og rette eventuelle fejl i dataene.
 ```{r rensning af data, echo=TRUE, warning=FALSE}
