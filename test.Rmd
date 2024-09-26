@@ -43,7 +43,7 @@ garmin_clean <- garmin_raw %>%
   
   # fjern række med filter()
   filter(
-    row_number() != 375) %>% # fjern rækken.
+    !row_number() %in% c(375, 295)) %>% # fjern rækken.
   
   # væk med kollonner som ingen reel data har
   select(
@@ -65,7 +65,6 @@ garmin_clean <- garmin_raw %>%
   
   # mutate kollonner
   mutate(
-    # Datoer med lubridate
     date_time = ymd_hms(date_time),# convert to date-time
     date_onset = date(date_time), # extract date
     time_onset = as_hms(date_time), # extract time
@@ -80,7 +79,7 @@ garmin_clean <- garmin_raw %>%
     calories = as.numeric(calories), # convert to numeric
     calories = ifelse(calories > 20, calories / 100, calories), # convert to kilocalories
     calories = ifelse(calories == 16.000, NA, calories), # bugged value
-    
+  
     # Tid
     time = as_hms(time), # convert to time
     
@@ -90,7 +89,15 @@ garmin_clean <- garmin_raw %>%
     avg_speed = avg_speed / 10, # convert to km/h
     
     # Hr
-    avg_hr = as.numeric(avg_hr))
+    avg_hr = as.numeric(avg_hr),
+    max_hr = as.numeric(max_hr),
+    
+    # ascent
+    total_ascent = as.numeric(total_ascent), 
+    ascent = case_when(
+      total_ascent < 400. ~ "Flat",
+      total_ascent >= 400 ~ "Moderate",
+      total_ascent > 800 ~ "Hilly")) # categorize ascent
 ```
 
 Nu hvor dataene er rene, kan vi begynde at udforske dem. Der er helt sikkert flere variable som ville være praktiske at konvertere til andre data classes, men til denne forestilling kan det her gå :) 
@@ -122,8 +129,7 @@ garmin_clean %>%
   scale_y_continuous(breaks = seq(0, 115, 15),
                      expand = c(0, 0)) +
   scale_x_discrete(expand = c(0, 0)) +
-  scale_fill_manual(values = rainbow(7)) +
-  theme_modern() +
+  theme_minimal() +
   labs(
     x = "Ugedage",
     y = "Antal aktiviteter",
@@ -160,8 +166,7 @@ garmin_clean %>%
   scale_y_continuous(breaks = seq(0, 90, 10),
                      expand = c(0, 0)) +
   scale_x_discrete(expand = c(0, 0)) +
-  scale_fill_manual(values = rainbow(12)) +
-  theme_modern() +
+  theme_minimal() +
   labs(
     x = "Måneder",
     y = "Antal aktiviteter",
@@ -172,6 +177,52 @@ garmin_clean %>%
 
 ```
 Der må man bare sige, jeg kunne nok godt stramme mig lidt an i vinterhalvåret. Ikke nok med at blive kaldt "Weekend warrior", det ville være slemt nok, men hvis jeg blev kaldt "solskinsrytter" er det nok heller ikke helt forkert. Kulde er bare ikke mig!
+
+
+Vi kan undersøge hvad min gennemsnitspuls oftest er på mine cykelture:
+```{r}
+garmin_clean %>% 
+  filter(avg_hr > 115) %>% 
+  ggplot(mapping = aes(x = avg_hr)) +
+  geom_histogram(
+    binwidth = 5, 
+    aes(fill = after_stat(count)),
+    show.legend = FALSE,
+    color = "black") +
+  scale_x_continuous(
+    breaks = seq(0, 170, 5),
+    expand = c(0, 0)) + 
+  scale_y_continuous(
+    breaks = seq(0, 80, 10),
+    expand = c(0, 0)) +
+  theme_minimal() +
+  labs(
+    x = "Gennemsnitspuls",
+    y = "Antal aktiviteter",
+    title = "Distribution af gennemsnitspuls under aktiviteter") +
+  theme(
+    plot.title = element_text(hjust = 0.5))
+```
+...
+Og vi kan se på følgende graf at der ser ud til at være en tendens til at jeg har en højere gennemsnitsfart på kortere ture end på de længere ture.
+```{r}
+ggplot(garmin_clean, aes(x = time,
+                         y = distance,
+                         color = avg_speed)) +
+  geom_point() +
+  scale_y_continuous(breaks = seq(0, 150, 20)) +
+  annotate(x = 6000, y = 120, geom = "text", label = "Prikkernes farve som afspejler gennemsnitsfart viser 
+           en tydelig sammenhæng mellem kortere ture og en højere gennemsnitsfart", 
+           size = 3.5) +
+  theme_minimal() +
+  theme(legend.position = c(0.9, 0.085),
+        legend.direction = "horizontal",
+        legend.title.position = "top") +
+  labs(title = "Tid sammenlignet med distance",
+       x = "Tid",
+       y = "Distance (km)",
+       color = "Gennemsnitsfart")
+```
 
 Det helt store spørgsmål er vel om jeg så er blevet hurtigere eller langsommere på min cykel,
 og det har jeg undersøgt ved at opdele data i to grupper, før og efter min 30 års fødselsdag, og efterfølgende lavet en t-test.
@@ -195,11 +246,10 @@ garmin_clean %>%
     y = avg_speed,
     fill = year_cat)) +
   geom_boxplot(show.legend = FALSE) + # add boxplot
-  scale_fill_manual(values = rainbow(3)) +
   scale_y_continuous(breaks = seq(0, 45, 5),
                      expand = c(0, 0)) +
   scale_x_discrete(expand = c(0, 0)) +
-  theme_modern() +
+  theme_minimal() +
   labs (
     x = "År",
     y = "Gennensnitshastighed (km/t)",
@@ -238,15 +288,12 @@ ggplot(data = garmin_clean,
                      expand = c(0, 0)) +
   scale_y_continuous(breaks = seq(0, 40, 5),
                      expand = c(0, 0)) +
-  scale_color_gradientn(colors = rainbow(12),
-                        breaks = seq(2013, 2024, 2),
-                        labels = seq(2013, 2024, 2)) +
-  theme_modern() +
+  theme_minimal() +
   labs(
     x = "År",
     y = "Gennemsnitsfart",
     title = "Lineær regression mellem gennemsnitsfart og tid",
-    caption = "Garmin data mellem 2013-06-09 til 2024-09-11",
+    caption = "Kilde: Privat Garmin data mellem 2013-06-09 til 2024-09-11",
     color = "År") +
   theme(
     plot.title = element_text(hjust = 0.5),
